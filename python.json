@@ -1,0 +1,149 @@
+{
+	// Place your snippets for python here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	// Example:
+	"Import Module": {
+		"prefix": ["im"],
+		"body": [
+			"import sys",
+			"import copy",
+			"from math import sqrt,gcd,ceil,floor",
+			"from collections import Counter, deque, defaultdict",
+			"from heapq import heappush, heappop, heapify",
+			"from bisect import bisect_left, bisect_right, bisect, insort_left,insort_right",
+			"from itertools import accumulate, product, permutations, combinations",
+			"from sortedcontainers import SortedDict,SortedList,SortedSet",
+			"readline=sys.stdin.readline",
+			"sys.setrecursionlimit(2**30)",
+			"from functools import lru_cache",
+			"#メモ化再帰",
+			"#@lru_cache(maxsize=None)",
+			"#再帰関数の高速化(CPythonの方がうまくいくし早い)",
+			"#import pypyjit",
+			"#pypyjit.set_param('max_unroll_recursion=-1')\n\n"
+		],
+		"description": "Import neccesary module"
+	},
+
+	"Input": {
+		"prefix": ["in","inp"],
+		"body": [
+			"map(int,readline().split())"
+		],
+		"description": "Input Template"
+	},
+
+	"UnionFind": {
+		"prefix": ["uni","unionfind"],
+		"body": [
+"# UnionFind",
+"class UnionFind:",
+"\t\tdef __init__(self,n):",
+"\t\t\t\tself.n=n",
+"\t\t\t\tself.parent_size=[-1]*n\n",
+"\t\tdef leader(self,a):",
+"\t\t\t\tif self.parent_size[a]<0: return a",
+"\t\t\t\tself.parent_size[a]=self.leader(self.parent_size[a])",
+"\t\t\t\treturn self.parent_size[a]\n",
+"\t\tdef merge(self,a,b):",
+"\t\t\t\tx,y=self.leader(a),self.leader(b)",
+"\t\t\t\tif x == y: return",
+"\t\t\t\tif abs(self.parent_size[x])<abs(self.parent_size[y]):x,y=y,x",
+"\t\t\t\tself.parent_size[x] += self.parent_size[y]",
+"\t\t\t\tself.parent_size[y]=x",
+"\t\t\t\treturn\n",
+"\t\tdef same(self,a,b):",
+"\t\t\t\treturn self.leader(a) == self.leader(b)\n",
+"\t\tdef size(self,a):",
+"\t\t\t\treturn abs(self.parent_size[self.leader(a)])\n",
+"\t\tdef groups(self):",
+"\t\t\t\tresult=[[] for _ in range(self.n)]",
+"\t\t\t\tfor i in range(self.n):",
+"\t\t\t\t\t\tresult[self.leader(i)].append(i)",
+"\t\t\t\treturn [r for r in result if r != []]\n\n"
+		],
+		"description": "Input Template"
+	},
+
+	"SegTree": {
+		"prefix": ["seg","segtree"],
+		"body": [
+"# セグメントツリー(0-indexed)",
+"# 参考：https://atcoder.jp/contests/abc343/submissions/51262273",
+"def segfunc(x,y):",
+"\t\t\t\treturn x+y\n",
+"class SegTree:",
+"\t\t# 初期化(元のリスト、単位元、演算)",
+"\t\tdef __init__(self,x_list,init,segfunc):",
+"\t\t\t\tself.init=init",
+"\t\t\t\tself.segfunc=segfunc",
+"\t\t\t\tself.Height=len(x_list).bit_length()+1",
+"\t\t\t\t#セグ木にのせる値，構造体を指定",
+"\t\t\t\tself.Tree=[init for _ in range(2**self.Height)]",
+"\t\t\t\tself.num=2**(self.Height-1)",
+"\t\t\t\t#初期化，構造体の場合は変更必要",
+"\t\t\t\tfor i in range(len(x_list)):",
+"\t\t\t\t\t\tself.Tree[2**(self.Height-1)+i]=x_list[i]",
+"\t\t\t\tfor i in range(2**(self.Height-1)-1,0,-1):",
+"\t\t\t\t\t\tself.Tree[i]=segfunc(self.Tree[2*i],self.Tree[2*i+1])\n",
+"\t\tdef select(self,k):",
+"\t\t\t\treturn self.Tree[k+self.num]\n",
+"\t\tdef update(self,k,x):",
+"\t\t\t\ti=k+self.num",
+"\t\t\t\t#値を更新，構造体の場合は変更必要",
+"\t\t\t\tself.Tree[i]=x",
+"\t\t\t\twhile i>1:",
+"\t\t\t\t\t\tif i%2==0:",
+"\t\t\t\t\t\t\t\tself.Tree[i//2]=self.segfunc(self.Tree[i],self.Tree[i+1])",
+"\t\t\t\t\t\telse:",
+"\t\t\t\t\t\t\t\tself.Tree[i//2]=self.segfunc(self.Tree[i-1],self.Tree[i])",
+"\t\t\t\t\t\ti//=2\n",
+"\t\t# [l, r) の最大値を求める処理",
+"\t\tdef query(self,l,r):",
+"\t\t\t\t#返り値の初期化，構造体の場合は変更必要",
+"\t\t\t\tresl=self.init",
+"\t\t\t\tresr=self.init",
+"\t\t\t\tl+=self.num",
+"\t\t\t\tr+=self.num",
+"\t\t\t\twhile l<r:",
+"\t\t\t\t\t\tif l&1:",
+"\t\t\t\t\t\t\t\tresl=self.segfunc(resl,self.Tree[l])",
+"\t\t\t\t\t\t\t\tl+=1",
+"\t\t\t\t\t\tif r&1:",
+"\t\t\t\t\t\t\t\tresr=self.segfunc(self.Tree[r-1],resr)",
+"\t\t\t\t\t\t\t\tr-=1",
+"\t\t\t\t\t\tl>>=1",
+"\t\t\t\t\t\tr>>=1",
+"\t\t\t\t#クエリを返す",
+"\t\t\t\treturn self.segfunc(resl,resr)",
+"#A=list(map(int, input().split()))",
+"#seg=SegTree(A,0,segfunc)",
+"#for i in range(Q):",
+"#   T,X,Y=map(int, input().split())",
+"#   seg.update(X-1,seg.select(X-1)^Y)",
+"#   print(seg.query(X-1,Y))\n\n"
+		],
+		"description": "Input Template"
+	},
+	// "For create": {
+	// 	"prefix": ["fors",],
+	// 	"body": [
+	// 		"for $1 in range($2):\n\t$0"
+	// 	],
+	// 	"description": "create for-statement"
+	// },
+
+	"Compression": {
+		"prefix": ["comp"],
+		"body": [
+"# 座標圧縮",
+"def comp(A: list):",
+"\t\tB=sorted(set(A))",
+"\t\tD={v: i for i,v in enumerate(B)}",
+"\t\treturn list((map(lambda v: D[v],A)))\n\n",
+		],
+		"description": "coordinates compression"
+	},
+}
