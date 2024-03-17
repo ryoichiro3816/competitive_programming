@@ -22,7 +22,8 @@
 			"#@lru_cache(maxsize=None)",
 			"#再帰関数の高速化(CPythonの方がうまくいくし早い)",
 			"#import pypyjit",
-			"#pypyjit.set_param('max_unroll_recursion=-1')\n\n"
+			"#pypyjit.set_param('max_unroll_recursion=-1')",
+			"#deepcopyは遅いので,list1=[i[:] for i in list]を代わりに使う\n\n"
 		],
 		"description": "Import neccesary module"
 	},
